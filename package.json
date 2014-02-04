@@ -1,0 +1,46 @@
+{
+  "name": "hubot-typetalk",
+  "version": "0.0.1",
+  "description": "A hubot adapter for typetalk",
+  "main": "src/typetalk",
+  "scripts": {
+    "test": "make test"
+  },
+  "config": {
+    "blanket": {
+      "pattern": "hubot-typetalk/src",
+      "loader": "./node-loaders/coffee-script"
+    }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/akiomik/hubot-typetalk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/akiomik/hubot-typetalk/issues"
+  },
+  "keywords": [
+    "hubot",
+    "typetalk"
+  ],
+  "author": {
+    "name": "Akiomi Kamakura",
+    "email": "akiomik@gmail.com",
+    "url": "https://github.com/akiomik"
+  },
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "dependencies": {
+    "hubot": ">=2.3.0",
+    "request": "~2.33.0"
+  },
+  "devDependencies": {
+    "coffee-script": "~1.6.3",
+    "chai": "*",
+    "mocha": "*",
+    "nock": "~0.23.0",
+    "blanket": "git://github.com/alex-seville/blanket.git#e8c7207fba8c2e12ea6e4c62006c0d0a09e0d79d",
+    "mocha-lcov-reporter": "0.0.1",
+    "coveralls": "~2.5.0"
+  }
+}
