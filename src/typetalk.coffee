@@ -17,9 +17,8 @@ class Typetalk extends Hubot.Adapter
       clientId: process.env.HUBOT_TYPETALK_CLIENT_ID
       clientSecret: process.env.HUBOT_TYPETALK_CLIENT_SECRET
       rooms: process.env.HUBOT_TYPETALK_ROOMS
-      apiRate: process.env.HUBOT_TYPETALK_API_RATE
 
-    bot = new TypetalkStreaming(options, @robot)
+    bot = new TypetalkStreaming options, @robot
     @bot = bot
 
     @emit 'connected'
@@ -29,22 +28,16 @@ exports.use = (robot) ->
 
 class TypetalkStreaming extends EventEmitter
   constructor: (options, @robot) ->
-    unless options.clientId? and options.clientSecret? \
-        and options.rooms? and options.apiRate?
+    unless options.clientId? and options.clientSecret? and options.rooms?
       @robot.logger.error \
         'Not enough parameters provided. ' \
-        + 'Please set client id, client secret, rooms and API rate'
+        + 'Please set client id, client secret and rooms'
       process.exit 1
 
     @clientId = options.clientId
     @clientSecret = options.clientSecret
     @rooms = options.rooms.split ','
-    @rate = parseInt options.apiRate, 10
     @host = 'typetalk.in'
-
-    unless @rate > 0
-      @robot.logger.error 'API rate must be greater then 0'
-      process.exit 1
 
   Topics: (callback) ->
     @get '/topics', "", callback
