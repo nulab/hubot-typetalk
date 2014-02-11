@@ -80,6 +80,8 @@ class TypetalkStreaming extends EventEmitter
         client_secret: @clientSecret
         grant_type: 'client_credentials'
         scope: 'my,topic.read,topic.post'
+      headers:
+        'User-Agent': "#{Package.name} v#{Package.version}"
 
     Request.post options, (err, res, body) =>
       if err
@@ -114,6 +116,7 @@ class TypetalkStreaming extends EventEmitter
         method: method
         headers:
           Authorization: "Bearer #{@accessToken}"
+          'User-Agent': "#{Package.name} v#{Package.version}"
 
       if method is 'POST'
         options.form = body
