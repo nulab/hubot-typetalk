@@ -1,12 +1,10 @@
 HTTPS          = require 'https'
 Request        = require 'request'
 {EventEmitter} = require 'events'
+Package        = require '../package'
+Hubot          = require 'hubot'
 
-Robot         = (require 'hubot').Robot
-Adapter       = (require 'hubot').Adapter
-TextMessage   = (require 'hubot').TextMessage
-
-class Typetalk extends Adapter
+class Typetalk extends Hubot.Adapter
   # override
   send: (envelope, strings...) ->
     for string in strings
