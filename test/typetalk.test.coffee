@@ -2,7 +2,7 @@ should = (require 'chai').should()
 nock = require 'nock'
 
 Adapter = require '../src/typetalk'
-Fixture = require './Fixtures'
+Fixture = require './fixtures'
 RobotMock = require './mock/robot'
 
 clientId = 'deadbeef'
