@@ -83,15 +83,8 @@ class TypetalkStreaming extends EventEmitter
           callback err, {}
 
       if res.statusCode >= 400
-        switch res.statusCode
-          when 401
-            throw new Error "Invalid access token provided"
-          else
-            logger.error "Typetalk HTTPS status code: #{res.statusCode}"
-            logger.error "Typetalk HTTPS response body:"
-            logger.error body
-            json = try JSON.parse body catch e then body or {}
-            logger.error json
+        throw new Error "Typetalk API returned unexpected status code: " \
+          + "#{res.statusCode}"
 
       json = try JSON.parse body catch e then body or {}
       @accessToken = json.access_token
@@ -103,7 +96,7 @@ class TypetalkStreaming extends EventEmitter
   request: (method, path, body, callback) ->
     logger = @robot.logger
 
-    @updateAccessToken (err, data) =>
+    req = (err, data) =>
       options =
         url: "https://#{@host}/api/v1#{path}"
         method: method
@@ -116,24 +109,21 @@ class TypetalkStreaming extends EventEmitter
       else
         options.body = body
 
-      Request options, (err, res, body) ->
+      Request options, (err, res, body) =>
         if err
-          logger.error "Typetalk HTTPS response error: #{err}"
+          logger.error "Typetalk response error: #{err}"
           if callback
             callback err, {}
 
         if res.statusCode >= 400
-          switch res.statusCode
-            when 401
-              throw new Error "Invalid access token provided"
-            else
-              logger.error "Typetalk HTTPS status code: #{res.statusCode}"
-              logger.error "Typetalk HTTPS response body:"
-              logger.error body
-              json = try JSON.parse body catch e then body or {}
-              logger.error json
+          @updateAccessToken req
 
         if callback
           json = try JSON.parse body catch e then body or {}
           callback null, json
+
+    if @accessToken
+      req()
+    else
+      @updateAccessToken req
 
