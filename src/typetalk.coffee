@@ -72,7 +72,8 @@ class TypetalkStreaming extends EventEmitter
   Topic: (id) ->
     get: (opts, callback) =>
       params = Querystring.stringify opts
-      path = "/topics/#{id}?#{params}"
+      params = "?#{params}" if params
+      path = "/topics/#{id}#{params}"
       @get path, "", callback
 
     create: (message, opts, callback) =>

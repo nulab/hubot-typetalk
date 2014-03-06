@@ -11,6 +11,7 @@ topicId = '1'
 process.env.HUBOT_TYPETALK_CLIENT_ID = clientId
 process.env.HUBOT_TYPETALK_CLIENT_SECRET = clientSecret
 process.env.HUBOT_TYPETALK_ROOMS = topicId
+process.env.HUBOT_TYPETALK_API_RATE = 1
 
 host = 'https://typetalk.in'
 
