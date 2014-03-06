@@ -28,6 +28,16 @@ class Typetalk extends Hubot.Adapter
     bot = new TypetalkStreaming options, @robot
     @bot = bot
 
+    bot.on 'message', (roomId, id, account, body) =>
+      user = @robot.brain.userForId account.id,
+        name: account.name
+        room: roomId
+      message = new Hubot.TextMessage user, body, id
+      @receive message
+
+    for roomId in bot.rooms
+      bot.Topic(roomId).listen()
+
     @emit 'connected'
 
 exports.use = (robot) ->
@@ -65,6 +75,27 @@ class TypetalkStreaming extends EventEmitter
       data = opts
       data.message = message
       @post "/topics/#{id}", data, callback
+
+    listen: =>
+      lastPostId = 0
+      setInterval =>
+        opts = if lastPostId is 0
+          {}
+        else
+          from: lastPostId
+          direction: 'forward'
+          count: 20
+
+        @Topic(id).get opts, (err, data) =>
+          for post in data.posts
+            if lastPostId < post.id
+              lastPostId = post.id
+              @emit 'message',
+                id,
+                post.id,
+                post.account,
+                post.message,
+      , 1000 / (@rate / (60 * 60))
 
   get: (path, body, callback) ->
     @request "GET", path, body, callback
