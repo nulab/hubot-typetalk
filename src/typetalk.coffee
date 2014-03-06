@@ -3,6 +3,7 @@ Request        = require 'request'
 {EventEmitter} = require 'events'
 Package        = require '../package'
 Hubot          = require 'hubot'
+Querystring    = require 'querystring'
 
 class Typetalk extends Hubot.Adapter
   # override
@@ -56,11 +57,13 @@ class TypetalkStreaming extends EventEmitter
 
   Topic: (id) ->
     get: (opts, callback) =>
-      @get "/topics/#{id}", "", callback
+      params = Querystring.stringify opts
+      path = "/topics/#{id}?#{params}"
+      @get path, "", callback
 
     create: (message, opts, callback) =>
-      data =
-        message: message
+      data = opts
+      data.message = message
       @post "/topics/#{id}", data, callback
 
   get: (path, body, callback) ->
