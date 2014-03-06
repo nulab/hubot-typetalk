@@ -9,7 +9,11 @@ class Typetalk extends Hubot.Adapter
   # override
   send: (envelope, strings...) ->
     for string in strings
-      @bot.Topic(envelope.room).create string, {}, (err, data) =>
+      option = if envelope.is_reply
+        replyTo: envelope.message.id
+      else
+        {}
+      @bot.Topic(envelope.room).create string, option, (err, data) =>
         @robot.logger.error "Typetalk send error: #{err}" if err?
 
   # override
