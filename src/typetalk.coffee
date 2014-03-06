@@ -12,6 +12,11 @@ class Typetalk extends Hubot.Adapter
         @robot.logger.error "Typetalk send error: #{err}" if err?
 
   # override
+  reply: (envelope, strings...) ->
+    envelope.is_reply = true
+    @send envelope, strings.map((str) -> "@#{envelope.user.name} #{str}")...
+
+  # override
   run: ->
     options =
       clientId: process.env.HUBOT_TYPETALK_CLIENT_ID
