@@ -9,10 +9,11 @@ class Typetalk extends Hubot.Adapter
   # override
   send: (envelope, strings...) ->
     for string in strings
-      option = if envelope.is_reply
-        replyTo: envelope.message.id
-      else
-        {}
+      option =
+        if envelope.is_reply
+          replyTo: envelope.message.id
+        else
+          {}
       @bot.Topic(envelope.room).create string, option, (err, data) =>
         @robot.logger.error "Typetalk send error: #{err}" if err?
 
@@ -67,14 +68,14 @@ class TypetalkStreaming extends EventEmitter
       process.exit 1
 
   Topics: (callback) ->
-    @get '/topics', "", callback
+    @get '/topics', '', callback
 
   Topic: (id) ->
     get: (opts, callback) =>
       params = Querystring.stringify opts
       params = "?#{params}" if params
       path = "/topics/#{id}#{params}"
-      @get path, "", callback
+      @get path, '', callback
 
     create: (message, opts, callback) =>
       data = opts
@@ -84,22 +85,25 @@ class TypetalkStreaming extends EventEmitter
     listen: =>
       lastPostId = 0
       setInterval =>
-        opts = if lastPostId is 0
-          {}
-        else
-          from: lastPostId
-          direction: 'forward'
-          count: 20
+        opts =
+          if lastPostId is 0
+            {}
+          else
+            from: lastPostId
+            direction: 'forward'
+            count: 100
 
         @Topic(id).get opts, (err, data) =>
           for post in data.posts
-            if lastPostId < post.id
-              lastPostId = post.id
-              @emit 'message',
-                id,
-                post.id,
-                post.account,
-                post.message,
+            continue unless lastPostId < post.id
+
+            lastPostId = post.id
+            @emit 'message',
+              id,
+              post.id,
+              post.account,
+              post.message
+
       , 1000 / (@rate / (60 * 60))
 
   get: (path, body, callback) ->
@@ -130,8 +134,8 @@ class TypetalkStreaming extends EventEmitter
     Request.post options, (err, res, body) =>
       if err
         logger.error "Typetalk HTTPS response error: #{err}"
-        if callback
-          callback err, {}
+        callback err, {} if callback
+        return
 
       if res.statusCode >= 400
         throw new Error "Typetalk API returned unexpected status code: " \
@@ -141,8 +145,7 @@ class TypetalkStreaming extends EventEmitter
       @accessToken = json.access_token
       @refreshToken = json.refresh_token
 
-      if callback
-        callback null, json
+      callback null, json if callback
 
   request: (method, path, body, callback) ->
     logger = @robot.logger
@@ -163,8 +166,8 @@ class TypetalkStreaming extends EventEmitter
       Request options, (err, res, body) =>
         if err
           logger.error "Typetalk response error: #{err}"
-          if callback
-            callback err, {}
+          callback err, {} if callback
+          return
 
         if res.statusCode >= 400
           @updateAccessToken req
