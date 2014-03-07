@@ -4,6 +4,7 @@ Request        = require 'request'
 Package        = require '../package'
 Hubot          = require 'hubot'
 Querystring    = require 'querystring'
+_              = require 'underscore'
 
 class Typetalk extends Hubot.Adapter
   # override
@@ -87,7 +88,7 @@ class TypetalkStreaming extends EventEmitter
       @get path, '', callback
 
     create: (message, opts, callback) =>
-      data = opts
+      data = _.clone opts
       data.message = message
       @post "/topics/#{id}", data, callback
 
