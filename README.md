@@ -11,21 +11,29 @@ A Hubot adapter for typetalk.
 ## Installation
 
 1. Add `hubot-typetalk` to dependencies in your hubot's `package.json`.
-```javascript
+  ```javascript
 "dependencies": {
-    "hubot-typetalk": "0.0.1"
+    "hubot-typetalk": "0.0.2"
 }
-```
+  ```
 
 2. Install `hubot-typetalk`.
-```sh
+  ```sh
 npm install
-```
+  ```
 
-3. Run hubot with typetalk adapter.
-```sh
+3. Setup your hubot.
+  ```sh
+export HUBOT_TYPETALK_CLIENT_ID='DEADBEEF'     # see http://developers.typetalk.in/oauth.html#client
+export HUBOT_TYPETALK_CLIENT_SECRET='FACEFEED'
+export HUBOT_TYPETALK_ROOMS='2321,2684'        # comma separated
+export HUBOT_TYPETALK_API_RATE=100             # request per hour
+  ```
+
+4. Run hubot with typetalk adapter.
+  ```sh
 bin/hubot -a typetalk
-```
+  ```
 
 ## License
 

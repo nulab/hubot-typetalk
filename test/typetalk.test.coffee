@@ -4,6 +4,8 @@ nock = require 'nock'
 Adapter = require '../src/typetalk'
 Fixture = require './fixtures'
 RobotMock = require './mock/robot'
+Querystring = require 'querystring'
+Url = require 'url'
 
 clientId = 'deadbeef'
 clientSecret = 'deadbeef'
@@ -11,6 +13,7 @@ topicId = '1'
 process.env.HUBOT_TYPETALK_CLIENT_ID = clientId
 process.env.HUBOT_TYPETALK_CLIENT_SECRET = clientSecret
 process.env.HUBOT_TYPETALK_ROOMS = topicId
+process.env.HUBOT_TYPETALK_API_RATE = 1
 
 host = 'https://typetalk.in'
 
@@ -22,6 +25,9 @@ describe 'Typetalk', ->
     (nock 'https://typetalk.in')
       .post("/oauth2/access_token")
       .reply 200, Fixture.oauth2.access_token
+    (nock 'https://typetalk.in')
+      .get("/api/v1/profile")
+      .reply 200, Fixture.profile.get
 
     robot = new RobotMock Adapter
     adapter = robot.adapter
@@ -65,6 +71,16 @@ describe 'TypetalkStreaming', ->
   it 'should have host', ->
     bot.should.have.a.property 'host'
 
+  describe '#Profile', ->
+    it 'should get profile', (done) ->
+      (nock 'https://typetalk.in')
+        .get('/api/v1/profile')
+        .reply 200, Fixture.profile.get
+
+      bot.Profile (err, data) ->
+        data.should.be.deep.equal Fixture.profile.get
+        done()
+
   describe '#Topics', ->
     it 'should get topics', (done) ->
       (nock 'https://typetalk.in')
@@ -82,22 +98,34 @@ describe 'TypetalkStreaming', ->
       topic = bot.Topic topicId
 
     it 'should get topic messages', (done) ->
-      opts = {}
+      opts =
+        from: '1234'
+        count: '100'
+
       (nock 'https://typetalk.in')
+        .filteringPath(/\?.*/g, '')
         .get("/api/v1/topics/#{topicId}")
-        .reply 200, Fixture.topic.get
+        .reply 200, (url, body) ->
+          query = Querystring.parse (Url.parse url).query
+          query.should.be.deep.equal opts
+          Fixture.topic.get
 
       topic.get opts, (err, data) ->
         data.should.be.deep.equal Fixture.topic.get
         done()
 
     it 'should create a message to the topic', (done) ->
-      opts = {}
       message = 'test'
+      opts =
+        replyTo: '1234'
+
       (nock 'https://typetalk.in')
         .post("/api/v1/topics/#{topicId}")
         .reply 200, (url, body) ->
-          body.should.be.equal "message=#{message}"
+          query = Querystring.parse body
+          query.message.should.be.equal message
+          delete query.message
+          query.should.be.deep.equal opts
           Fixture.topic.post
 
       topic.create message, opts, (err, data) ->
