@@ -34,14 +34,20 @@ class Typetalk extends Hubot.Adapter
     @bot = bot
 
     bot.on 'message', (roomId, id, account, body) =>
+      return if account.id is bot.info.account.id
+
       user = @robot.brain.userForId account.id,
         name: account.name
         room: roomId
       message = new Hubot.TextMessage user, body, id
       @receive message
 
-    for roomId in bot.rooms
-      bot.Topic(roomId).listen()
+    bot.Profile (err, data) ->
+      bot.info = data
+      bot.name = bot.info.account.name
+
+      for roomId in bot.rooms
+        bot.Topic(roomId).listen()
 
     @emit 'connected'
 
@@ -66,6 +72,9 @@ class TypetalkStreaming extends EventEmitter
     unless @rate > 0
       @robot.logger.error 'API rate must be greater then 0'
       process.exit 1
+
+  Profile: (callback) ->
+    @get '/profile', '', callback
 
   Topics: (callback) ->
     @get '/topics', '', callback
