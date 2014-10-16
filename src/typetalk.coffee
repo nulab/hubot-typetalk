@@ -76,7 +76,7 @@ class TypetalkStreaming extends EventEmitter
         process.exit 1
 
     unless @rate > 0
-      @robot.logger.error 'API rate must be greater then 0'
+      @robot.logger.error 'API rate must be greater than 0'
       process.exit 1
 
   Profile: (callback) ->
