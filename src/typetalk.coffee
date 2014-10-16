@@ -70,6 +70,11 @@ class TypetalkStreaming extends EventEmitter
     @host = 'typetalk.in'
     @rate = parseInt options.apiRate, 10
 
+    for roomId in @rooms
+      unless roomId.length > 0 and parseInt(roomId) > 0
+        @robot.logger.error 'Room id must be greater than 0'
+        process.exit 1
+
     unless @rate > 0
       @robot.logger.error 'API rate must be greater then 0'
       process.exit 1
@@ -104,6 +109,10 @@ class TypetalkStreaming extends EventEmitter
             count: 100
 
         @Topic(id).get opts, (err, data) =>
+          if !data.posts
+            @robot.logger.error 'Room must be accessible'
+            process.exit 1
+
           for post in data.posts
             continue unless lastPostId < post.id
 
