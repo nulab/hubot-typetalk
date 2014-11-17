@@ -13,7 +13,7 @@ A Hubot adapter for typetalk.
 1. Add `hubot-typetalk` to dependencies in your hubot's `package.json`.
   ```javascript
 "dependencies": {
-    "hubot-typetalk": "0.0.3"
+    "hubot-typetalk": "0.0.4"
 }
   ```
 

@@ -1,6 +1,6 @@
 {
   "name": "hubot-typetalk",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A hubot adapter for typetalk",
   "main": "src/typetalk",
   "scripts": {
@@ -14,10 +14,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/akiomik/hubot-typetalk.git"
+    "url": "git://github.com/nulab/hubot-typetalk.git"
   },
   "bugs": {
-    "url": "https://github.com/akiomik/hubot-typetalk/issues"
+    "url": "https://github.com/nulab/hubot-typetalk/issues"
   },
   "keywords": [
     "hubot",
