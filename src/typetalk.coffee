@@ -5,6 +5,7 @@ Package        = require '../package'
 Hubot          = require 'hubot'
 Querystring    = require 'querystring'
 _              = require 'underscore'
+WebSocket      = require 'ws'
 
 class Typetalk extends Hubot.Adapter
   # override
@@ -29,7 +30,6 @@ class Typetalk extends Hubot.Adapter
       clientId: process.env.HUBOT_TYPETALK_CLIENT_ID
       clientSecret: process.env.HUBOT_TYPETALK_CLIENT_SECRET
       rooms: process.env.HUBOT_TYPETALK_ROOMS
-      apiRate: process.env.HUBOT_TYPETALK_API_RATE
 
     bot = new TypetalkStreaming options, @robot
     @bot = bot
@@ -40,15 +40,12 @@ class Typetalk extends Hubot.Adapter
       user = @robot.brain.userForId account.id,
         name: account.name
         room: roomId
-      message = new Hubot.TextMessage user, body, id
-      @receive message
+      @receive new Hubot.TextMessage user, body, id
 
     bot.Profile (err, data) ->
       bot.info = data
       bot.name = bot.info.account.name
-
-      for roomId in bot.rooms
-        bot.Topic(roomId).listen()
+      bot.listen()
 
     @emit 'connected'
 
@@ -57,8 +54,7 @@ exports.use = (robot) ->
 
 class TypetalkStreaming extends EventEmitter
   constructor: (options, @robot) ->
-    unless options.clientId? and options.clientSecret? and \
-        options.rooms? and options.apiRate?
+    unless options.clientId? and options.clientSecret? and options.rooms?
       @robot.logger.error \
         'Not enough parameters provided. ' \
         + 'Please set client id, client secret and rooms'
@@ -68,16 +64,53 @@ class TypetalkStreaming extends EventEmitter
     @clientSecret = options.clientSecret
     @rooms = options.rooms.split ','
     @host = 'typetalk.in'
-    @rate = parseInt options.apiRate, 10
 
     for roomId in @rooms
       unless roomId.length > 0 and parseInt(roomId) > 0
         @robot.logger.error 'Room id must be greater than 0'
         process.exit 1
 
-    unless @rate > 0
-      @robot.logger.error 'API rate must be greater than 0'
-      process.exit 1
+  listen: =>
+    setupWebSocket = () =>
+      ws = new WebSocket "https://#{@host}/api/v1/streaming",
+                           headers:
+                             'Authorization'         : "Bearer #{@accessToken}"
+                             'User-Agent'            : "#{Package.name} v#{Package.version}"
+      conneted = false
+
+      ws.on 'open', () =>
+        conneted = true
+        @robot.logger.info "Typetalk WebSocket connected"
+        
+      ws.on 'error', (event) =>
+        @robot.logger.error "Typetalk WebSocket error: #{event}"
+        if not connected
+          setTimeout ->
+            setupWebSocket()
+          , 30000
+        
+      ws.on 'close', (code, message) =>
+        connected = false
+        @robot.logger.info "Typetalk WebSocket disconnected: code=#{code}, message=#{message}"
+        @robot.logger.info "Typetalk WebSocket try to reconnect"
+        setTimeout ->
+            setupWebSocket()
+        , 30000
+
+      ws.on 'message', (data, flags) =>
+        event = try JSON.parse data catch e then data or {}
+        if event.type == 'postMessage'
+          topic = event.data.topic
+          post = event.data.post
+          if topic.id+"" in @rooms
+            @emit 'message',
+                   topic.id,
+                   post.id,
+                   post.account,
+                   post.message
+
+    setupWebSocket()
+    return
 
   Profile: (callback) ->
     @get '/profile', '', callback
@@ -96,34 +129,6 @@ class TypetalkStreaming extends EventEmitter
       data = _.clone opts
       data.message = message
       @post "/topics/#{id}", data, callback
-
-    listen: =>
-      lastPostId = 0
-      setInterval =>
-        opts =
-          if lastPostId is 0
-            {}
-          else
-            from: lastPostId
-            direction: 'forward'
-            count: 100
-
-        @Topic(id).get opts, (err, data) =>
-          if !data.posts
-            @robot.logger.error 'Room must be accessible'
-            process.exit 1
-
-          for post in data.posts
-            continue unless lastPostId < post.id
-
-            lastPostId = post.id
-            @emit 'message',
-              id,
-              post.id,
-              post.account,
-              post.message
-
-      , 1000 / (@rate / (60 * 60))
 
   get: (path, body, callback) ->
     @request "GET", path, body, callback

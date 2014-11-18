@@ -33,7 +33,8 @@
   "dependencies": {
     "hubot": ">=2.6.0",
     "request": "~2.33.0",
-    "underscore": "~1.6.0"
+    "underscore": "~1.6.0",
+    "ws": "~0.4.32"
   },
   "devDependencies": {
     "coffee-script": "~1.6.3",
