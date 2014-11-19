@@ -23,7 +23,7 @@ npm install
 
 3. Setup your hubot.
   ```sh
-export HUBOT_TYPETALK_CLIENT_ID='DEADBEEF'     # see http://developers.typetalk.in/oauth.html#client
+export HUBOT_TYPETALK_CLIENT_ID='DEADBEEF'     # see http://developer.nulab-inc.com/docs/typetalk/auth#client
 export HUBOT_TYPETALK_CLIENT_SECRET='FACEFEED'
 export HUBOT_TYPETALK_ROOMS='2321,2684'        # comma separated
   ```
