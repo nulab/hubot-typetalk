@@ -26,7 +26,6 @@ npm install
 export HUBOT_TYPETALK_CLIENT_ID='DEADBEEF'     # see http://developers.typetalk.in/oauth.html#client
 export HUBOT_TYPETALK_CLIENT_SECRET='FACEFEED'
 export HUBOT_TYPETALK_ROOMS='2321,2684'        # comma separated
-export HUBOT_TYPETALK_API_RATE=100             # request per hour
   ```
 
 4. Run hubot with typetalk adapter.
