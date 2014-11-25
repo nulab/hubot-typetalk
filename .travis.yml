@@ -6,5 +6,4 @@ notifications:
   webhooks:
     urls:
       - https://nulab-inc.com/hubot/travis?room=3741
-    on_success: always
-
+    on_success: change
