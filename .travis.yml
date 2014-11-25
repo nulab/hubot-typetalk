@@ -2,3 +2,9 @@ language: node_js
 node_js:
   - "0.10"
 script: make test-coveralls
+notifications:
+  webhooks:
+    urls:
+      - https://nulab-inc.com/hubot/travis?room=3741
+    #on_success: change
+
