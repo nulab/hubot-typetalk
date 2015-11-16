@@ -37,12 +37,12 @@
     "ws": "~0.4.32"
   },
   "devDependencies": {
-    "coffee-script": "~1.6.3",
+    "blanket": "^1.2.0",
     "chai": "*",
+    "coffee-script": "~1.6.3",
+    "coveralls": "~2.8.0",
     "mocha": "*",
-    "nock": "~0.27.2",
-    "blanket": "git://github.com/alex-seville/blanket.git#e8c7207fba8c2e12ea6e4c62006c0d0a09e0d79d",
     "mocha-lcov-reporter": "0.0.1",
-    "coveralls": "~2.8.0"
+    "nock": "~0.27.2"
   }
 }
