@@ -1,6 +1,11 @@
 language: node_js
 node_js:
   - "0.10"
+  - "stable"
+sudo: false
+cache:
+  directories:
+    - node_modules
 script: make test-coveralls
 notifications:
   webhooks:
