@@ -80,6 +80,9 @@ class TypetalkStreaming extends EventEmitter
 
       ws.on 'open', () =>
         conneted = true
+        setInterval =>
+          ws.ping 'ping'
+        , 1000 * 60 * 10
         @robot.logger.info "Typetalk WebSocket connected"
         
       ws.on 'error', (event) =>
@@ -89,6 +92,9 @@ class TypetalkStreaming extends EventEmitter
             setupWebSocket()
           , 30000
         
+      ws.on 'pong', (data, flags) =>
+        @robot.logger.debug "pong"
+
       ws.on 'close', (code, message) =>
         connected = false
         @robot.logger.info "Typetalk WebSocket disconnected: code=#{code}, message=#{message}"
