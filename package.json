@@ -1,6 +1,6 @@
 {
   "name": "hubot-typetalk",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A hubot adapter for typetalk",
   "main": "src/typetalk",
   "scripts": {
