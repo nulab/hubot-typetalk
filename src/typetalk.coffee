@@ -199,7 +199,7 @@ class TypetalkStreaming extends EventEmitter
           callback err, {} if callback
           return
 
-        if res.statusCode >= 400
+        if res.statusCode == 401
           @updateAccessToken req
 
         if callback
