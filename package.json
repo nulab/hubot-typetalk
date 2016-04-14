@@ -40,7 +40,7 @@
     "blanket": "^1.2.0",
     "chai": "*",
     "coffee-script": "~1.6.3",
-    "coveralls": "~2.11.6",
+    "coveralls": "~2.11.9",
     "mocha": "*",
     "mocha-lcov-reporter": "0.0.1",
     "nock": "~0.27.2"
