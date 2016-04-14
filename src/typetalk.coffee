@@ -76,10 +76,10 @@ class TypetalkStreaming extends EventEmitter
                            headers:
                              'Authorization'         : "Bearer #{@accessToken}"
                              'User-Agent'            : "#{Package.name} v#{Package.version}"
-      conneted = false
+      connected = false
 
       ws.on 'open', () =>
-        conneted = true
+        connected = true
         setInterval =>
           ws.ping 'ping'
         , 1000 * 60 * 10
