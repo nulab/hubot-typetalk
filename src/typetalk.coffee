@@ -63,7 +63,7 @@ class TypetalkStreaming extends EventEmitter
     @clientId = options.clientId
     @clientSecret = options.clientSecret
     @rooms = options.rooms.split ','
-    @host = 'typetalk.in'
+    @host = 'typetalk.com'
 
     for roomId in @rooms
       unless roomId.length > 0 and parseInt(roomId) > 0
@@ -84,14 +84,14 @@ class TypetalkStreaming extends EventEmitter
           ws.ping 'ping'
         , 1000 * 60 * 10
         @robot.logger.info "Typetalk WebSocket connected"
-        
+
       ws.on 'error', (event) =>
         @robot.logger.error "Typetalk WebSocket error: #{event}"
         if not connected
           setTimeout ->
             setupWebSocket()
           , 30000
-        
+
       ws.on 'pong', (data, flags) =>
         @robot.logger.debug "pong"
 
@@ -210,4 +210,3 @@ class TypetalkStreaming extends EventEmitter
       req()
     else
       @updateAccessToken req
-

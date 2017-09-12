@@ -15,17 +15,17 @@ process.env.HUBOT_TYPETALK_CLIENT_SECRET = clientSecret
 process.env.HUBOT_TYPETALK_ROOMS = topicId
 process.env.HUBOT_TYPETALK_API_RATE = 1
 
-host = 'https://typetalk.in'
+host = 'https://typetalk.com'
 
 describe 'Typetalk', ->
   robot = null
   adapter = null
 
   beforeEach ->
-    (nock 'https://typetalk.in')
+    (nock 'https://typetalk.com')
       .post("/oauth2/access_token")
       .reply 200, Fixture.oauth2.access_token
-    (nock 'https://typetalk.in')
+    (nock 'https://typetalk.com')
       .get("/api/v1/profile")
       .reply 200, Fixture.profile.get
 
@@ -50,7 +50,7 @@ describe 'TypetalkStreaming', ->
   bot = null
 
   beforeEach ->
-    (nock 'https://typetalk.in')
+    (nock 'https://typetalk.com')
       .post("/oauth2/access_token")
       .reply 200, Fixture.oauth2.access_token
 
@@ -73,7 +73,7 @@ describe 'TypetalkStreaming', ->
 
   describe '#Profile', ->
     it 'should get profile', (done) ->
-      (nock 'https://typetalk.in')
+      (nock 'https://typetalk.com')
         .get('/api/v1/profile')
         .reply 200, Fixture.profile.get
 
@@ -83,7 +83,7 @@ describe 'TypetalkStreaming', ->
 
   describe '#Topics', ->
     it 'should get topics', (done) ->
-      (nock 'https://typetalk.in')
+      (nock 'https://typetalk.com')
         .get('/api/v1/topics')
         .reply 200, Fixture.topics.get
 
@@ -102,7 +102,7 @@ describe 'TypetalkStreaming', ->
         from: '1234'
         count: '100'
 
-      (nock 'https://typetalk.in')
+      (nock 'https://typetalk.com')
         .filteringPath(/\?.*/g, '')
         .get("/api/v1/topics/#{topicId}")
         .reply 200, (url, body) ->
@@ -119,7 +119,7 @@ describe 'TypetalkStreaming', ->
       opts =
         replyTo: '1234'
 
-      (nock 'https://typetalk.in')
+      (nock 'https://typetalk.com')
         .post("/api/v1/topics/#{topicId}")
         .reply 200, (url, body) ->
           query = Querystring.parse body
@@ -131,4 +131,3 @@ describe 'TypetalkStreaming', ->
       topic.create message, opts, (err, data) ->
         data.should.be.deep.equal Fixture.topic.post
         done()
-
