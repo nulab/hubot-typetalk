@@ -64,6 +64,7 @@ class TypetalkStreaming extends EventEmitter
     @clientSecret = options.clientSecret
     @rooms = options.rooms.split ','
     @host = 'typetalk.com'
+    @msg_host = 'message.typetalk.com'
 
     for roomId in @rooms
       unless roomId.length > 0 and parseInt(roomId) > 0
@@ -72,7 +73,7 @@ class TypetalkStreaming extends EventEmitter
 
   listen: =>
     setupWebSocket = () =>
-      ws = new WebSocket "https://#{@host}/api/v1/streaming",
+      ws = new WebSocket "https://#{@msg_host}/api/v1/streaming",
                            headers:
                              'Authorization'         : "Bearer #{@accessToken}"
                              'User-Agent'            : "#{Package.name} v#{Package.version}"
