@@ -4,13 +4,7 @@
   "description": "A hubot adapter for typetalk",
   "main": "src/typetalk",
   "scripts": {
-    "test": "mocha ./test"
-  },
-  "config": {
-    "blanket": {
-      "pattern": "hubot-typetalk/src",
-      "loader": "./node-loaders/coffee-script"
-    }
+    "test": "mocha ./test/*.test.coffee --require coffeescript"
   },
   "repository": {
     "type": "git",
@@ -32,17 +26,17 @@
   "readmeFilename": "README.md",
   "dependencies": {
     "hubot": ">=2.6.0",
-    "request": "~2.74.0",
+    "request": "^2.88.0",
     "underscore": "~1.6.0",
-    "ws": "~0.4.32"
+    "ws": "^6.1.4"
   },
   "devDependencies": {
-    "blanket": "^1.2.0",
     "chai": "*",
-    "coffee-script": "~1.6.3",
-    "coveralls": "~2.11.9",
-    "mocha": "*",
+    "coffeescript": "~1.6.3",
+    "coveralls": "^3.0.3",
+    "mocha": "^6.0.1",
     "mocha-lcov-reporter": "0.0.1",
+    "mockery": "^2.1.0",
     "nock": "~0.27.2"
   }
 }

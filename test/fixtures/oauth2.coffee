@@ -3,4 +3,3 @@ exports.access_token =
   token_type: "Bearer"
   expires_in: 3600
   refresh_token: "refreshtoken"
-

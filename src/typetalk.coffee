@@ -30,6 +30,8 @@ class Typetalk extends Hubot.Adapter
       clientId: process.env.HUBOT_TYPETALK_CLIENT_ID
       clientSecret: process.env.HUBOT_TYPETALK_CLIENT_SECRET
       rooms: process.env.HUBOT_TYPETALK_ROOMS
+      autoReconnect: if process.env.HUBOT_TYPETALK_AUTO_RECONNECT == "false" then false else true
+      streaming_url: process.env.HUBOT_TYPETALK_STREAMING_URL
 
     bot = new TypetalkStreaming options, @robot
     @bot = bot
@@ -63,6 +65,8 @@ class TypetalkStreaming extends EventEmitter
     @clientId = options.clientId
     @clientSecret = options.clientSecret
     @rooms = options.rooms.split ','
+    @autoReconnect = options.autoReconnect
+    @streaming_url = options.streaming_url
     @host = 'typetalk.com'
     @msg_host = 'message.typetalk.com'
 
@@ -73,7 +77,7 @@ class TypetalkStreaming extends EventEmitter
 
   listen: =>
     setupWebSocket = () =>
-      ws = new WebSocket "https://#{@msg_host}/api/v1/streaming",
+      ws = new WebSocket @streaming_url || "https://#{@msg_host}/api/v1/streaming",
                            headers:
                              'Authorization'         : "Bearer #{@accessToken}"
                              'User-Agent'            : "#{Package.name} v#{Package.version}"
@@ -88,7 +92,8 @@ class TypetalkStreaming extends EventEmitter
 
       ws.on 'error', (event) =>
         @robot.logger.error "Typetalk WebSocket error: #{event}"
-        if not connected
+        if not connected and @autoReconnect
+          @robot.logger.info "Typetalk WebSocket try to reconnect"
           setTimeout ->
             setupWebSocket()
           , 30000
@@ -99,10 +104,11 @@ class TypetalkStreaming extends EventEmitter
       ws.on 'close', (code, message) =>
         connected = false
         @robot.logger.info "Typetalk WebSocket disconnected: code=#{code}, message=#{message}"
-        @robot.logger.info "Typetalk WebSocket try to reconnect"
-        setTimeout ->
+        if @autoReconnect
+          @robot.logger.info "Typetalk WebSocket try to reconnect"
+          setTimeout ->
             setupWebSocket()
-        , 30000
+          , 30000
 
       ws.on 'message', (data, flags) =>
         event = try JSON.parse data catch e then data or {}

@@ -1,9 +1,10 @@
 should = (require 'chai').should()
+mockery = require 'mockery'
 nock = require 'nock'
 
 Adapter = require '../src/typetalk'
 Fixture = require './fixtures'
-RobotMock = require './mock/robot'
+{Robot} = require 'hubot'
 Querystring = require 'querystring'
 Url = require 'url'
 
@@ -14,6 +15,8 @@ process.env.HUBOT_TYPETALK_CLIENT_ID = clientId
 process.env.HUBOT_TYPETALK_CLIENT_SECRET = clientSecret
 process.env.HUBOT_TYPETALK_ROOMS = topicId
 process.env.HUBOT_TYPETALK_API_RATE = 1
+process.env.HUBOT_TYPETALK_AUTO_RECONNECT = "false"
+process.env.HUBOT_TYPETALK_STREAMING_URL = "http://localhost:8080"
 
 host = 'https://typetalk.com'
 
@@ -29,11 +32,20 @@ describe 'Typetalk', ->
       .get("/api/v1/profile")
       .reply 200, Fixture.profile.get
 
-    robot = new RobotMock Adapter
+    mockery.enable {
+      warnOnReplace: false,
+      warnOnUnregistered: false
+    }
+
+    mockery.registerMock 'hubot-typetalk', Adapter
+
+    robot = new Robot null, 'typetalk'
     adapter = robot.adapter
 
   afterEach ->
+    mockery.disable
     nock.cleanAll()
+    robot.shutdown()
 
   describe '#run', ->
     it 'should emmit on connected', (done) ->
@@ -53,23 +65,36 @@ describe 'TypetalkStreaming', ->
     (nock 'https://typetalk.com')
       .post("/oauth2/access_token")
       .reply 200, Fixture.oauth2.access_token
+    (nock 'https://typetalk.com')
+      .get("/api/v1/profile")
+      .reply 200, Fixture.profile.get
 
-    robot = new RobotMock Adapter
+    mockery.enable {
+      warnOnReplace: false,
+      warnOnUnregistered: false
+    }
+
+    mockery.registerMock 'hubot-typetalk', Adapter
+
+    robot = new Robot null, 'typetalk'
     adapter = robot.adapter
 
     robot.run()
     bot = adapter.bot
 
   afterEach ->
+    mockery.disable()
     nock.cleanAll()
+    robot.shutdown()
 
-  it 'should have configs from environment variables', ->
-    bot.clientId.should.be.equal clientId
-    bot.clientSecret.should.be.equal clientSecret
-    bot.rooms.should.be.deep.equal [topicId]
+  describe '#constructor', ->
+    it 'should have configs from environment variables', ->
+      bot.clientId.should.be.equal clientId
+      bot.clientSecret.should.be.equal clientSecret
+      bot.rooms.should.be.deep.equal [topicId]
 
-  it 'should have host', ->
-    bot.should.have.a.property 'host'
+    it 'should have host', ->
+      bot.should.have.a.property 'host'
 
   describe '#Profile', ->
     it 'should get profile', (done) ->
@@ -107,7 +132,8 @@ describe 'TypetalkStreaming', ->
         .get("/api/v1/topics/#{topicId}")
         .reply 200, (url, body) ->
           query = Querystring.parse (Url.parse url).query
-          query.should.be.deep.equal opts
+          query.from.should.be.equal opts.from
+          query.count.should.be.equal opts.count
           Fixture.topic.get
 
       topic.get opts, (err, data) ->
@@ -125,7 +151,7 @@ describe 'TypetalkStreaming', ->
           query = Querystring.parse body
           query.message.should.be.equal message
           delete query.message
-          query.should.be.deep.equal opts
+          query.replyTo.should.be.equal opts.replyTo
           Fixture.topic.post
 
       topic.create message, opts, (err, data) ->
