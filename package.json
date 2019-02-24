@@ -4,7 +4,9 @@
   "description": "A hubot adapter for typetalk",
   "main": "src/typetalk",
   "scripts": {
-    "test": "mocha ./test/*.test.coffee --require coffeescript"
+    "test": "mocha --require coffeescript ./test/*.test.coffee",
+    "coverage": "nyc mocha --require coffeescript ./test/*.test.coffee",
+    "report-coverage": "nyc --reporter lcov mocha --require coffeescript ./test/*.test.coffee && nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {
     "type": "git",
@@ -32,11 +34,13 @@
   },
   "devDependencies": {
     "chai": "*",
+    "coffee-coverage": "^3.0.1",
     "coffeescript": "~1.6.3",
     "coveralls": "^3.0.3",
     "mocha": "^6.0.1",
     "mocha-lcov-reporter": "0.0.1",
     "mockery": "^2.1.0",
-    "nock": "~0.27.2"
+    "nock": "~0.27.2",
+    "nyc": "^13.3.0"
   }
 }

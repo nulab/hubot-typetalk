@@ -19,3 +19,5 @@ node_modules
 
 # for coverage
 coverage.html
+.nyc_output
+coverage
