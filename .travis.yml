@@ -5,7 +5,6 @@ sudo: false
 cache:
   directories:
     - node_modules
-script: make test-coveralls
 notifications:
   webhooks:
     urls:
