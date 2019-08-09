@@ -37,10 +37,10 @@
     "coffee-coverage": "^3.0.1",
     "coffeescript": "~1.6.3",
     "coveralls": "^3.0.3",
-    "mocha": "^6.0.1",
+    "mocha": "^6.2.0",
     "mocha-lcov-reporter": "0.0.1",
     "mockery": "^2.1.0",
-    "nock": "~0.27.2",
-    "nyc": "^13.3.0"
+    "nock": "~10.0.6",
+    "nyc": "^14.1.1"
   }
 }
