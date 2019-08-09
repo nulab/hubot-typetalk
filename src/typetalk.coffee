@@ -85,9 +85,10 @@ class TypetalkStreaming extends EventEmitter
 
       ws.on 'open', () =>
         connected = true
-        setInterval =>
+        clearInterval timerId
+        timerId = setInterval =>
           ws.ping 'ping'
-        , 1000 * 60 * 10
+        , 1000 * 10 * 15
         @robot.logger.info "Typetalk WebSocket connected"
 
       ws.on 'error', (event) =>
