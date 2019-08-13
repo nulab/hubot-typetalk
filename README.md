@@ -5,7 +5,7 @@ A Hubot adapter for [Typetalk](http://www.typetalk.com/).
 
 [![Build Status](https://travis-ci.org/nulab/hubot-typetalk.svg?branch=master)](https://travis-ci.org/nulab/hubot-typetalk)
 [![Coverage Status](https://coveralls.io/repos/nulab/hubot-typetalk/badge.png?branch=master)](https://coveralls.io/r/nulab/hubot-typetalk?branch=master)
-[![NPM version](https://badge.fury.io/js/hubot-typetalk.png)](http://badge.fury.io/js/hubot-typetalk)
+[![NPM version](https://badge.fury.io/js/hubot-typetalk.svg)](http://badge.fury.io/js/hubot-typetalk)
 
 ## Installation
 
