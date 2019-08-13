@@ -14,9 +14,9 @@ topicId = '1'
 process.env.HUBOT_TYPETALK_CLIENT_ID = clientId
 process.env.HUBOT_TYPETALK_CLIENT_SECRET = clientSecret
 process.env.HUBOT_TYPETALK_ROOMS = topicId
-process.env.HUBOT_TYPETALK_API_RATE = 1
 process.env.HUBOT_TYPETALK_AUTO_RECONNECT = "false"
 process.env.HUBOT_TYPETALK_STREAMING_URL = "http://localhost:8080"
+process.env.HUBOT_LOG_LEVEL = "alert"
 
 host = 'https://typetalk.com'
 
@@ -44,7 +44,6 @@ describe 'Typetalk', ->
 
   afterEach ->
     mockery.disable
-    nock.cleanAll()
     robot.shutdown()
 
   describe '#run', ->
@@ -84,7 +83,6 @@ describe 'TypetalkStreaming', ->
 
   afterEach ->
     mockery.disable()
-    nock.cleanAll()
     robot.shutdown()
 
   describe '#constructor', ->
@@ -99,6 +97,9 @@ describe 'TypetalkStreaming', ->
   describe '#Profile', ->
     it 'should get profile', (done) ->
       (nock 'https://typetalk.com')
+        .post("/oauth2/access_token")
+        .reply 200, Fixture.oauth2.access_token
+      (nock 'https://typetalk.com')
         .get('/api/v1/profile')
         .reply 200, Fixture.profile.get
 
@@ -108,6 +109,9 @@ describe 'TypetalkStreaming', ->
 
   describe '#Topics', ->
     it 'should get topics', (done) ->
+      (nock 'https://typetalk.com')
+        .post("/oauth2/access_token")
+        .reply 200, Fixture.oauth2.access_token
       (nock 'https://typetalk.com')
         .get('/api/v1/topics')
         .reply 200, Fixture.topics.get
@@ -120,6 +124,9 @@ describe 'TypetalkStreaming', ->
     topic = null
 
     beforeEach ->
+      (nock 'https://typetalk.com')
+        .post("/oauth2/access_token")
+        .reply 200, Fixture.oauth2.access_token
       topic = bot.Topic topicId
 
     it 'should get topic messages', (done) ->
