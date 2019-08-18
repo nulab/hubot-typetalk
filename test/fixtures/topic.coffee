@@ -1,4 +1,0 @@
-exports.get = []
-
-exports.post = []
-

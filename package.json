@@ -2,11 +2,12 @@
   "name": "hubot-typetalk",
   "version": "0.5.0",
   "description": "A hubot adapter for typetalk",
-  "main": "src/typetalk",
+  "main": "./lib/typetalk",
   "scripts": {
-    "test": "mocha --require coffeescript ./test/*.test.coffee",
-    "coverage": "nyc mocha --require coffeescript ./test/*.test.coffee",
-    "report-coverage": "nyc --reporter lcov mocha --require coffeescript ./test/*.test.coffee && nyc report --reporter=text-lcov | coveralls"
+    "lint": "eslint ./lib ./test",
+    "test": "mocha ./test/*.test.js",
+    "coverage": "nyc mocha ./test/*.test.js",
+    "report-coverage": "nyc --reporter lcov mocha ./test/*.test.js && nyc report --reporter=text-lcov | coveralls"
   },
   "repository": {
     "type": "git",
@@ -27,16 +28,17 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "dependencies": {
-    "hubot": ">=2.6.0",
+    "hubot": ">=3.0.0",
     "request": "^2.88.0",
     "underscore": "~1.6.0",
     "ws": "^6.1.4"
   },
   "devDependencies": {
     "chai": "*",
-    "coffee-coverage": "^3.0.1",
-    "coffeescript": "~1.6.3",
     "coveralls": "^3.0.3",
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-plugin-import": "^2.18.2",
     "mocha": "^6.2.0",
     "mocha-lcov-reporter": "0.0.1",
     "mockery": "^2.1.0",
