@@ -7,30 +7,24 @@ A Hubot adapter for [Typetalk](http://www.typetalk.com/).
 [![Coverage Status](https://coveralls.io/repos/github/nulab/hubot-typetalk/badge.svg?branch=master)](https://coveralls.io/github/nulab/hubot-typetalk?branch=master)
 [![NPM version](https://badge.fury.io/js/hubot-typetalk.svg)](http://badge.fury.io/js/hubot-typetalk)
 
-## Installation
+## Usage
 
-1. Add `hubot-typetalk` to dependencies in your hubot's `package.json`.
-  ```javascript
-"dependencies": {
-        "hubot-typetalk": "1.0.0"
-}
+1. Install hubot-typetalk.
+  ```sh
+$ npm install -g yo generator-hubot
+$ yo hubot --adapter typetalk
   ```
 
-2. Install `hubot-typetalk`.
+2. Set environment variables.
   ```sh
-npm install
+$ export HUBOT_TYPETALK_CLIENT_ID='DEADBEEF' # see https://developer.nulab.com/docs/typetalk/auth#client
+$ export HUBOT_TYPETALK_CLIENT_SECRET='FACEFEED'
+$ export HUBOT_TYPETALK_ROOMS='2321,2684' # comma separated
   ```
 
-3. Setup your hubot.
+3. Run.
   ```sh
-export HUBOT_TYPETALK_CLIENT_ID='DEADBEEF'     # see http://developer.nulab-inc.com/docs/typetalk/auth#client
-export HUBOT_TYPETALK_CLIENT_SECRET='FACEFEED'
-export HUBOT_TYPETALK_ROOMS='2321,2684'        # comma separated
-  ```
-
-4. Run hubot with typetalk adapter.
-  ```sh
-bin/hubot -a typetalk
+$ bin/hubot -a typetalk
   ```
 
 ## License
