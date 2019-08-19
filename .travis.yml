@@ -5,8 +5,5 @@ sudo: false
 cache:
   directories:
     - node_modules
-notifications:
-  webhooks:
-    urls:
-      - https://nulab-inc.com/hubot/travis?room=3741
-    on_success: change
+script:
+  - "npm run lint"
