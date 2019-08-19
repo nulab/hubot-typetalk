@@ -1,4 +1,12 @@
-node_modules
+# dot files
+.eslintrc.js
 .gitignore
 .travis.yml
-coverage.html
+
+# deps
+node_modules
+
+# unit testing/coverage
+test/
+.nyc_output
+coverage
