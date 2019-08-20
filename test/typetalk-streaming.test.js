@@ -17,6 +17,18 @@ describe('TypetalkStreaming', () => {
     }).to.throw();
   });
 
+  it('occurs an error without invalit room id', () => {
+    expect(() => {
+      /* eslint-disable-next-line no-new */
+      new TypetalkStreaming({
+        clientId: 'DUMMYCLIENTID',
+        clientSecret: 'DUMMYCLIENTSECRET',
+        rooms: '-1',
+        streamingURL: 'http://localhost:8080',
+      });
+    }).to.throw();
+  });
+
   describe('listen', () => {
     beforeEach(() => {
       mockery.enable({
