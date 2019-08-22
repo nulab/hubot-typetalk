@@ -108,6 +108,9 @@ describe('TypetalkStreaming', () => {
       nock('https://typetalk.com')
         .post('/api/v1/topics/23456')
         .reply(200, '{{{');
+      nock('https://typetalk.com')
+        .post('/api/v1/topics/34567')
+        .replyWithError('something happened');
     });
 
     it('should be a function', () => {
@@ -123,6 +126,12 @@ describe('TypetalkStreaming', () => {
     it('receives invalid json', () => {
       this.ts.postMessage('23456', 'Hello, world!', {}, (err) => {
         expect(err).to.be.instanceOf(SyntaxError);
+      });
+    });
+
+    it('receives error response', () => {
+      this.ts.postMessage('34567', 'Hello, world!', {}, (err) => {
+        expect(err).to.be.instanceOf(Error);
       });
     });
   });
