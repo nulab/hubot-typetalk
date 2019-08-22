@@ -98,18 +98,16 @@ describe('TypetalkStreaming', () => {
       }, robot);
       nock('https://typetalk.com')
         .post('/oauth2/access_token')
-        .reply(200, Fixture.oauth2);
-      nock('https://typetalk.com')
+        .reply(200, Fixture.oauth2)
         .get('/api/v1/profile')
-        .reply(200, Fixture.profile);
-      nock('https://typetalk.com')
+        .reply(200, Fixture.profile)
         .post('/api/v1/topics/12345')
-        .reply(200);
-      nock('https://typetalk.com')
+        .reply(200)
         .post('/api/v1/topics/23456')
-        .reply(200, '{{{');
-      nock('https://typetalk.com')
+        .reply(401)
         .post('/api/v1/topics/34567')
+        .reply(200, '{{{')
+        .post('/api/v1/topics/45678')
         .replyWithError('something happened');
     });
 
@@ -123,14 +121,20 @@ describe('TypetalkStreaming', () => {
       });
     });
 
-    it('receives invalid json', () => {
+    it('receives unauthorized', () => {
       this.ts.postMessage('23456', 'Hello, world!', {}, (err) => {
+        expect(err).to.be.instanceOf(Error);
+      });
+    });
+
+    it('receives invalid json', () => {
+      this.ts.postMessage('34567', 'Hello, world!', {}, (err) => {
         expect(err).to.be.instanceOf(SyntaxError);
       });
     });
 
     it('receives error response', () => {
-      this.ts.postMessage('34567', 'Hello, world!', {}, (err) => {
+      this.ts.postMessage('45678', 'Hello, world!', {}, (err) => {
         expect(err).to.be.instanceOf(Error);
       });
     });
