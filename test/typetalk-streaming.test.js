@@ -66,9 +66,6 @@ describe('TypetalkStreaming', () => {
         rooms: '12345',
       }, robot);
       nock('https://typetalk.com')
-        .post('/oauth2/access_token')
-        .reply(200, Fixture.oauth2);
-      nock('https://typetalk.com')
         .get('/api/v1/profile')
         .reply(200, Fixture.profile);
     });
@@ -97,8 +94,6 @@ describe('TypetalkStreaming', () => {
         rooms: '12345',
       }, robot);
       nock('https://typetalk.com')
-        .post('/oauth2/access_token')
-        .reply(200, Fixture.oauth2)
         .get('/api/v1/profile')
         .reply(200, Fixture.profile)
         .post('/api/v1/topics/12345')
@@ -116,6 +111,7 @@ describe('TypetalkStreaming', () => {
     });
 
     it('should post message', () => {
+      this.ts.accessToken = 'DUMMYACCESSTOKEN';
       this.ts.postMessage('12345', 'Hello, world!', {}, (err, data) => {
         expect(data).to.deep.equal({});
       });
@@ -146,24 +142,55 @@ describe('TypetalkStreaming', () => {
         warnOnReplace: false,
         warnOnUnregistered: false,
       });
+      nock('https://typetalk.com')
+        .post('/oauth2/access_token', {
+          client_id: 'VALIDCLIENTID',
+          client_secret: 'VALIDCLIENTSECRET',
+          grant_type: 'client_credentials',
+          scope: 'my,topic.read,topic.post',
+        })
+        .reply(200, Fixture.oauth2);
+      nock('https://typetalk.com')
+        .post('/oauth2/access_token', {
+          client_id: 'INVALIDCLIENTID',
+          client_secret: 'INVALIDCLIENTSECRET',
+          grant_type: 'client_credentials',
+          scope: 'my,topic.read,topic.post',
+        })
+        .reply(400);
+    });
+
+    it('should be a function', () => {
       const robot = new Robot(null, 'typetalk');
-      this.ts = new TypetalkStreaming({
+      const ts = new TypetalkStreaming({
         clientId: 'DUMMYCLIENTID',
         clientSecret: 'DUMMYCLIENTSECRET',
         rooms: '12345',
       }, robot);
-      nock('https://typetalk.com')
-        .post('/oauth2/access_token')
-        .reply(200, Fixture.oauth2);
+      expect(ts.updateAccessToken).to.be.a('function');
     });
 
-    it('should be a function', () => {
-      expect(this.ts.updateAccessToken).to.be.a('function');
+    it('receives access token', () => {
+      const robot = new Robot(null, 'typetalk');
+      const ts = new TypetalkStreaming({
+        clientId: 'VALIDCLIENTID',
+        clientSecret: 'VALIDCLIENTSECRET',
+        rooms: '12345',
+      }, robot);
+      ts.updateAccessToken((err, data) => {
+        expect(data).to.deep.equal(Fixture.oauth2);
+      });
     });
 
-    it('should get access token', () => {
-      this.ts.updateAccessToken((err, data) => {
-        expect(data).deep.equal(Fixture.oauth2);
+    it('receives bad request', () => {
+      const robot = new Robot(null, 'typetalk');
+      const ts = new TypetalkStreaming({
+        clientId: 'INVALIDCLIENTID',
+        clientSecret: 'INVALIDCLIENTSECRET',
+        rooms: '12345',
+      }, robot);
+      ts.updateAccessToken((err) => {
+        expect(err).to.be.instanceOf(Error);
       });
     });
   });

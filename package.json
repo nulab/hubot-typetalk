@@ -34,7 +34,7 @@
     "ws": "^6.1.4"
   },
   "devDependencies": {
-    "chai": "*",
+    "chai": "^4.2.0",
     "coveralls": "^3.0.3",
     "eslint": "^6.1.0",
     "eslint-config-airbnb-base": "^14.0.0",
