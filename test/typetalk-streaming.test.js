@@ -104,7 +104,10 @@ describe('TypetalkStreaming', () => {
         .reply(200, Fixture.profile);
       nock('https://typetalk.com')
         .post('/api/v1/topics/12345')
-        .reply(200, {});
+        .reply(200);
+      nock('https://typetalk.com')
+        .post('/api/v1/topics/23456')
+        .reply(200, '{{{');
     });
 
     it('should be a function', () => {
@@ -114,6 +117,12 @@ describe('TypetalkStreaming', () => {
     it('should post message', () => {
       this.ts.postMessage('12345', 'Hello, world!', {}, (err, data) => {
         expect(data).to.deep.equal({});
+      });
+    });
+
+    it('receives invalid json', () => {
+      this.ts.postMessage('23456', 'Hello, world!', {}, (err) => {
+        expect(err).to.be.instanceOf(SyntaxError);
       });
     });
   });
