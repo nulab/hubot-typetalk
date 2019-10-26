@@ -5,7 +5,10 @@ sudo: false
 cache:
   directories:
     - node_modules
+env:
+  - HUBOT_VERSION="^3.0"
 script:
-  - "npm run lint"
+  - npm install hubot@"$HUBOT_VERSION"
+  - npm run lint
 after_success:
-  - "npm run report-coverage"
+  - npm run report-coverage
