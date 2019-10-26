@@ -96,8 +96,8 @@ describe('TypetalkStreaming', () => {
       nock('https://typetalk.com')
         .get('/api/v1/profile')
         .reply(200, Fixture.profile)
-        .post('/api/v1/topics/12345')
-        .reply(200)
+        .post('/api/v1/topics/12345', { message: 'Hello, world!' })
+        .reply(200, '{}')
         .post('/api/v1/topics/23456')
         .reply(401)
         .post('/api/v1/topics/34567')
@@ -113,6 +113,7 @@ describe('TypetalkStreaming', () => {
     it('should post message', () => {
       this.ts.accessToken = 'DUMMYACCESSTOKEN';
       this.ts.postMessage('12345', 'Hello, world!', {}, (err, data) => {
+        expect(err).to.equal(null);
         expect(data).to.deep.equal({});
       });
     });
