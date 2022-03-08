@@ -1,2 +1,2 @@
-exports.profile = require('./profile');
-exports.oauth2 = require('./oauth2');
+exports.profile = require('./profile.json');
+exports.oauth2 = require('./oauth2.json');
