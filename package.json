@@ -30,7 +30,7 @@
   "dependencies": {
     "request": "^2.88.0",
     "underscore": "^1.13.6",
-    "ws": "^7.2.0"
+    "ws": "^8.11.0"
   },
   "peerDependencies": {
     "hubot": ">=3.0.0"

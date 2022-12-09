@@ -24,7 +24,7 @@ describe('TypetalkStreaming', () => {
         clientId: 'DUMMYCLIENTID',
         clientSecret: 'DUMMYCLIENTSECRET',
         rooms: '-1',
-        streamingURL: 'http://localhost:8080',
+        streamingURL: 'ws://localhost:8080',
       });
     }).to.throw();
   });
@@ -40,7 +40,7 @@ describe('TypetalkStreaming', () => {
         clientId: 'DUMMYCLIENTID',
         clientSecret: 'DUMMYCLIENTSECRET',
         rooms: '12345',
-        streamingURL: 'http://localhost:8080',
+        streamingURL: 'ws://localhost:8080',
       }, robot);
     });
 
